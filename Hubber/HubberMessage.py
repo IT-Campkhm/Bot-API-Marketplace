@@ -58,9 +58,5 @@ class HubberMessage:
             f.seek(0)
             f.write(str(new_key))
             f.truncate()
-        
-        with open(self.lastkey_file, 'r+') as f:
-            d = f.read()
-            logging.info(f'update_lastkey in newmessage.py читаєм lastkey післч змін. Key: {d}')
 
         return new_key

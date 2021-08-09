@@ -47,11 +47,6 @@ class HubberOrder:
         response = requests.request("GET", self.url, headers = self.headers, data = {})
         data = response.json()
 
-        logging.info(
-            'Взяли lastkey - NewOrder.py\n'\
-            f'Values: {data[0]["id"]}\n\n'
-            )
-
         return data[0]["id"]
 
     def update_lastkey(self, new_key):
@@ -64,9 +59,5 @@ class HubberOrder:
             f.seek(0)
             f.write(str(new_key))
             f.truncate()
-        
-        with open(self.lastkey_file, 'r+') as f:
-            d = f.read()
-            logging.info(f'update_lastkey in neworder.py читаєм lastkey післч змін. Key: {d}')
-        
+
         return new_key

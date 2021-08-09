@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from Prom.config_prom import HEADERS_PROM, PAYLOAD_PROM, URL_ORDER_LIST_PROM
+from Prom.config import HEADERS_PROM, PAYLOAD_PROM, URL_ORDER_LIST_PROM
 
 
 class Prom:

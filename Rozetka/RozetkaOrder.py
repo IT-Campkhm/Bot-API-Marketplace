@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from Rozetka.config_rozetka import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
+from Rozetka.config import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
                                     URL_ORDER_LIST_ROZETKA)
 
 
