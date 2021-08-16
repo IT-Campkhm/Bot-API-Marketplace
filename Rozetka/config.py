@@ -23,6 +23,7 @@ headers = {
 responce = requests.request('POST', URL_AUTHORIZATION, headers = headers, data = payload)
 TOKEN = f'{responce.json()["content"]["access_token"]}'
 
+
 HEADERS_ROZETKA = {
     'Authorization': f'Bearer {TOKEN}',
     'Content-Type': 'application/json',

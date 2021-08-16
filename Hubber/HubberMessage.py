@@ -37,7 +37,7 @@ class HubberMessage:
                 new.append(data[0]['id'])
                 return new
             else:
-                logging.info('Else newnessage.py\n')
+                logging.info('Else newnessage.py\n\n')
                 
         except Exception as e:
             logging.exception(e)

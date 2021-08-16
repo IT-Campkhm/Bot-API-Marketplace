@@ -29,23 +29,27 @@ class Rozetka:
         return 'Перевірка на нові замовлення'
 
     def new_order(self):
-        
-        response = requests.request('GET', self.url, headers = self.headers, data = self.payload)
-        new = []
-        
-        logging.info(f'Lastkey: {self.lastkey}, New Order')
-        logging.info(f'ID: {response.json()["content"]["orders"][0]["id"]}, New Order')
-        logging.info(f'New: {new}, New Order')
+        try:
 
-        if int(self.lastkey) != int(response.json()['content']['orders'][0]['id']):
-            new.append(response.json()['content']['orders'][0]['id'])
-            return new
-        else:
-            logging.info('Else neworder.py\n\n')
+            response = requests.request('GET', self.url, headers = self.headers, data = self.payload)
+            new = []
+            logging.info(f'Lastkey: {self.lastkey}, New Order')
+            logging.info(f'ID: {response.json()["content"]["orders"][0]["id"]}, New Order')
+            logging.info(f'New: {new}, New Order')
+
+            if int(self.lastkey) != int(response.json()['content']['orders'][0]['id']):
+                new.append(response.json()['content']['orders'][0]['id'])
+                return new
+            else:
+                logging.info('Else neworder.py\n\n')
+        
+        except Exception as e:
+            logging.exception(e)
 
     def get_lastkey(self):
         response = requests.request("GET", self.url, headers = self.headers, data = self.payload)
-        return response.json()['content']['orders'][0]['id']
+        if response.json()['content']['orders']:
+            return response.json()['content']['orders'][0]['id']
 
     def update_lastkey(self, new_key):
         self.lastkey = new_key
