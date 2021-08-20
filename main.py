@@ -329,6 +329,17 @@ async def check_novaposhta(wait_for):
                     f'Телефон: {order_complete[1]["content"]["orders"][order_complete[2]]["recipient_phone"]}\n'\
                     f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}'
                 )
+
+                await dp.bot.send_message(
+                    OWNER,
+                    'Клієнт '\
+                    f'<code>{order_complete[1]["content"]["orders"][order_complete[2]]["recipient_title"]["full_name"]}</code>'\
+                    ' забрав свій(ої) товар(и):\n\n'\
+                    f'<code>{i}</code>\n\n'\
+                    'Відправте технічний лист клієнту\n'
+                    f'Телефон: {order_complete[1]["content"]["orders"][order_complete[2]]["recipient_phone"]}\n'\
+                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}'
+                )
                 
         except Exception as e:
             logging.exception(e)
