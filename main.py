@@ -3,23 +3,26 @@ import json
 import logging
 import os
 from datetime import datetime
+import timeit
 
 import aiogram
+import schedule
 import requests
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.builtin import Command
 
-from globalconfig import MODER, OWNER
+from globalconfig import MODER, OWNER, CHAT_ID
 from Hubber.config import (HEADERS_HUBBER, URL_MESSAGE_HUBBER,
                         URL_ORDER_HUBBER, URL_SEND_MESSAGE_HUBBER)
 from Hubber.HubberMessage import HubberMessage
 from Hubber.HubberOrder import HubberOrder
-from Prom.config_prom import (HEADERS_PROM, PAYLOAD_PROM, URL_ORDER_LIST_PROM,
+from Prom.config import (HEADERS_PROM, PAYLOAD_PROM, URL_ORDER_LIST_PROM,
                             URL_SET_STATUS_PROM)
 from Prom.PromOrder import Prom
-from Rozetka.config_rozetka import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
+from Rozetka.config import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
                                     URL_ORDER_LIST_ROZETKA)
 from Rozetka.RozetkaOrder import Rozetka
+from NovaPoshta.handler import NovaPoshta
 
 
 file_log = logging.FileHandler('log.txt')
@@ -39,10 +42,11 @@ prom = Prom('Prom\key_order.txt')
 rozetka = Rozetka('Rozetka\key_order.txt')
 hubber = HubberOrder('Hubber\key_order.txt')
 hubber_message = HubberMessage('Hubber\key_message.txt')
-
+novaposhta = NovaPoshta()
 
 async def on_startup_bot(dp: Dispatcher):
     try:
+
         if os.path.exists('Prom\key_order.txt'):
             order_prom = requests.request('GET', URL_ORDER_LIST_PROM, headers = HEADERS_PROM, data = PAYLOAD_PROM)
             p = open('Prom/key_order.txt', 'w')
@@ -51,7 +55,7 @@ async def on_startup_bot(dp: Dispatcher):
             p.close()
         else:
             logging.error('Файла Prom\key_order.txt немає')
-        
+
         if os.path.exists('Rozetka\key_order.txt'):
             order_rozetka = requests.request('GET', URL_ORDER_LIST_ROZETKA, headers = HEADERS_ROZETKA, data = PAYLOAD_ROZETKA)
             r = open('Rozetka/key_order.txt', 'w')
@@ -81,13 +85,18 @@ async def on_startup_bot(dp: Dispatcher):
         await dp.bot.send_message(
             OWNER,
             'Запуск!\n'\
-            f'В файл Prom/key_order.txt записалося значення {order_prom.json()["orders"][0]["id"]}\n'\
-            f'В файл Rozetka/key_order.txt записалося значення {order_rozetka.json()["content"]["orders"][0]["id"]}'
+            f'Значення яке записалося в файл Prom/key_order.txt: {order_prom.json()["orders"][0]["id"]}\n'\
+            f'Значення яке записалося в файл Rozetka/key_order.txt: {order_rozetka.json()["content"]["orders"][0]["id"]}\n\n'\
+            f'Значення яке записалося в файл Hubber/key_order.txt: {order_hubber.json()[0]["id"]}\n'\
+            f'Значення яке записалося в файл Hubber/key_message.txt: {message_hubber.json()[0]["id"]}\n\n'\
+            f'Значеня з функції Rozetka.get_lastkey: {rozetka.get_lastkey()}\n'\
+            f'Значеня з функції Prom.get_lastkey: {prom.get_lastkey()}\n'\
+            f'Значеня з функції HubberOrder.get_lastkey: {hubber.get_lastkey()}\n'\
+            f'Значеня з функції HubberMessage.het_lastkey: {hubber.get_lastkey()}'
         )
 
     except Exception as e:
         logging.exception(e)
-
 
 @dp.message_handler(Command('start'))
 async def start_command(message: types.Message):
@@ -102,7 +111,7 @@ async def log(message: types.Message):
 
     try:
         if message.from_user.id == OWNER:
-            await dp.bot.send_document(OWNER, open(r'Prom/log.txt', 'rb'))
+            await dp.bot.send_document(OWNER, open(r'log.txt', 'rb'))
     except Exception as e:
         logging.exception(e)
 
@@ -117,6 +126,7 @@ async def _test(message: types.Message):
 @dp.message_handler(Command('keys'))
 async def _keys(message: types.Message):
     if message.from_user.id == OWNER:
+
         with open('Prom/key_order.txt', 'r') as m:
             key_prom = m.read()
 
@@ -168,7 +178,6 @@ async def send_message(message: types.Message):
 
     except Exception as e:
         logging.exception(e)
-
 
 async def check_new_order_and_change_status_prom(wait_for):
     while True:
@@ -273,7 +282,7 @@ async def check_new_message_hubber(wait_for):
         try:
             response = requests.request('GET', URL_MESSAGE_HUBBER, headers = HEADERS_HUBBER, data = {})
 
-            logging.info('Пройшла перевірка на нове повідомлення Hubber')
+            logging.info('Перевірка на нове повідомлення Hubber')
 
             new_message = hubber_message.new_messages()
 
@@ -292,10 +301,48 @@ async def check_new_message_hubber(wait_for):
         except Exception as e:
             logging.exception(e)
 
+async def check_novaposhta(wait_for):
+    while True:
+        await asyncio.sleep(wait_for)
+
+        try:
+            order_complete = novaposhta.general_function()
+
+            if order_complete:
+
+                l = len(order_complete[1]['content']['orders'][order_complete[2]]['items_photos'])
+
+                item = []
+
+                for items in range(l):
+                    item.append(order_complete[1]['content']['orders'][order_complete[2]]['items_photos'][items]['item_name'])
+
+                i = '\n'.join(item)
+                
+                await dp.bot.send_message(
+                    CHAT_ID,
+                    'Клієнт '\
+                    f'<code>{order_complete[1]["content"]["orders"][order_complete[2]]["recipient_title"]["full_name"]}</code>'\
+                    ' забрав свій(ої) товар(и):\n\n'\
+                    f'<code>{i}</code>\n\n'\
+                    'Відправте технічний лист клієнту\n'
+                    f'Телефон: {order_complete[1]["content"]["orders"][order_complete[2]]["recipient_phone"]}\n'\
+                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}'
+                )
+                
+        except Exception as e:
+            logging.exception(e)
+            await dp.bot.send_message(
+                OWNER,
+                f'{e}'
+            )
 
 if __name__ == '__main__':
+    
     asyncio.get_event_loop().create_task(check_new_order_and_change_status_prom(2))
     asyncio.get_event_loop().create_task(check_new_order_and_change_status_rozetka(4))
     asyncio.get_event_loop().create_task(check_new_order_hubber(30))
     asyncio.get_event_loop().create_task(check_new_message_hubber(35))
+    asyncio.get_event_loop().create_task(check_novaposhta(140))
+
     executor.start_polling(dp, on_startup = on_startup_bot)
