@@ -7,8 +7,7 @@ from Rozetka.config import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
                             URL_ORDER_LIST_ROZETKA)
 
 from NovaPoshta.config import API_TOKEN_NP, HEADERS_NOVAPOSHTA, URL_TRACKING_NP
-from globalconfig import STATUS
-
+from globalconfig import OWNER, STATUS
 
 class NovaPoshta:
     url_rozetka_order = URL_ORDER_LIST_ROZETKA
@@ -29,16 +28,13 @@ class NovaPoshta:
         except Exception as e:
             logging.exception(e)
 
-    def end(self, *args):
-        return args
-
     def general_function(self):
         try:
 
             if self.get_order_list_rozetka()['success'] and self.get_order_list_rozetka()['content']['orders'] is not None:
 
-                logging.info('Перевірка на зміну статуса в НП и Розетці')
-                logging.info(f"{len(self.get_order_list_rozetka()['content']['orders'])}")
+                logging.info('Перевірка на зміну статуса в НП и Розетці\n')
+                logging.info(f"Довжина заказів з ТТН: {len(self.get_order_list_rozetka()['content']['orders'])}")
 
                 for order in range(len(self.get_order_list_rozetka()['content']['orders'])):
 
@@ -58,22 +54,26 @@ class NovaPoshta:
 
                     nova = requests.request('POST', self.url_novaposhta_tracking, headers = HEADERS_NOVAPOSHTA, data = payload)
 
-                    logging.info(f'{nova.json()["data"][0]["Status"]}')
-                    logging.info(f'{type(nova.json()["data"][0]["StatusCode"])}')
+                    logging.info(f'Назва статуса статуса: {nova.json()["data"][0]["Status"]}')
+                    logging.info(f'Код статуса: {nova.json()["data"][0]["StatusCode"]}')
 
                     if int(nova.json()['data'][0]['StatusCode']) in STATUS:
                         
                         order_by_ttn = self.get_order_by_ttn(self.get_order_list_rozetka()['content']['orders'][order]['ttn'])
-                        logging.info(f'{order_by_ttn.json()["content"]["orders"][order]["items_photos"][0]["item_name"]}')
-                        self.end(True, order_by_ttn.json(), order)
-                        '''
+                        logging.info(f'Назва товара: {order_by_ttn.json()["content"]["orders"][order]["items_photos"][0]["item_name"]}')
+                        
                         payload_rozetka = json.dumps({
                             'status': 6,
                             'seller_comment': 'Autho status. '\
-                                                f'Buyer picked up at {datetime.now().strftime("%d.%M.%Y %H:%M:%S")}'
+                                                f'Buyer picked up.'
                         })
                         finaly = requests.request('PUT', f'https://api-seller.rozetka.com.ua/orders/{order_by_ttn.json()["content"]["orders"][order]["id"]}', headers = HEADERS_ROZETKA, data = payload_rozetka)
-                        '''
+                        
+                        logging.info(f'Статус зміни статуса на отримано: {finaly.status_code}')
 
+                        return True, order_by_ttn.json(), order
+
+                    else:
+                        logging.info('Else checked pick order\n\n')
         except Exception as e:
             logging.exception(e)
