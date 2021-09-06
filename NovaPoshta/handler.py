@@ -55,7 +55,7 @@ class NovaPoshta:
                     nova = requests.request('POST', self.url_novaposhta_tracking, headers = HEADERS_NOVAPOSHTA, data = payload)
 
                     logging.info(f'Назва статуса статуса: {nova.json()["data"][0]["Status"]}')
-                    logging.info(f'Код статуса: {nova.json()["data"][0]["StatusCode"]}')
+                    logging.info(f'Код статуса: {nova.json()["data"][0]["StatusCode"]}\n')
 
                     if int(nova.json()['data'][0]['StatusCode']) in STATUS:
                         
@@ -73,7 +73,6 @@ class NovaPoshta:
 
                         return True, order_by_ttn.json(), order
 
-                    else:
-                        logging.info('Else checked pick order\n\n')
         except Exception as e:
             logging.exception(e)
+            

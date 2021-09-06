@@ -3,10 +3,9 @@ import json
 import logging
 import os
 from datetime import datetime
-import timeit
+import pprint
 
 import aiogram
-import schedule
 import requests
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.builtin import Command
@@ -119,7 +118,33 @@ async def log(message: types.Message):
 async def _test(message: types.Message):
 
     try:
-        pass
+        await message.answer(f'{message}')
+    except Exception as e:
+        logging.exception(e)
+
+@dp.message_handler(Command('test_pick'))
+async def _test_pick(message: types.Message):
+    try:
+        await message.answer(
+            'Клієнт '\
+            f'<code>ПІБ</code>'\
+            ' забрав свій(ої) товар(и):\n\n'\
+            f'<code>Забрані товари</code>\n\n'\
+            'Відправте технічний лист клієнту\n'
+            f'Телефон: <code>Телефон кліжнта</code>\n'\
+            f'TTN: \n'\
+            f'Сервісне повідомлення: https://bit.ly/3krF2cN',
+            disable_web_page_preview = True
+        )
+    except Exception as e:
+        logging.exception(e)
+
+@dp.message_handler(Command('get_id'))
+async def _get_id(message: types.Message):
+    try:
+        await message.answer(
+            f'{message.chat.id}'
+        )
     except Exception as e:
         logging.exception(e)
 
@@ -327,7 +352,9 @@ async def check_novaposhta(wait_for):
                     f'<code>{i}</code>\n\n'\
                     'Відправте технічний лист клієнту\n'
                     f'Телефон: {order_complete[1]["content"]["orders"][order_complete[2]]["recipient_phone"]}\n'\
-                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}'
+                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}\n'\
+                    f'Сервісне повідомлення: https://bit.ly/3krF2cN',
+                    disable_web_page_preview = True
                 )
 
                 await dp.bot.send_message(
@@ -338,7 +365,9 @@ async def check_novaposhta(wait_for):
                     f'<code>{i}</code>\n\n'\
                     'Відправте технічний лист клієнту\n'
                     f'Телефон: {order_complete[1]["content"]["orders"][order_complete[2]]["recipient_phone"]}\n'\
-                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}'
+                    f'TTN: {order_complete[1]["content"]["orders"][order_complete[2]]["ttn"]}\n'\
+                    f'Сервісне повідомлення: https://bit.ly/3krF2cN',
+                    disable_web_page_preview = True
                 )
                 
         except Exception as e:

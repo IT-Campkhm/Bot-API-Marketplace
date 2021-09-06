@@ -1,1 +1,1 @@
-worker: python main.py
+PROSup: python main.py
