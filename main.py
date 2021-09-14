@@ -82,20 +82,33 @@ async def on_startup_bot(dp: Dispatcher):
             h_m.write(str(message_hubber.json()[0]['id']))
         else:
             logging.error('Файла Hubber/key_message.txt немає')
-
-        await dp.bot.send_message(
-            OWNER,
-            'Запуск!\n'\
-            f'Значення яке записалося в файл Prom/key_order.txt: {order_prom.json()["orders"][0]["id"]}\n'\
-            f'Значення яке записалося в файл Rozetka/key_order.txt: {order_rozetka.json()["content"]["orders"][0]["id"]}\n\n'\
-            f'Значення яке записалося в файл Hubber/key_order.txt: {order_hubber.json()[0]["id"]}\n'\
-            f'Значення яке записалося в файл Hubber/key_message.txt: {message_hubber.json()[0]["id"]}\n\n'\
-            f'Значеня з функції Rozetka.get_lastkey: {rozetka.get_lastkey()}\n'\
-            f'Значеня з функції Prom.get_lastkey: {prom.get_lastkey()}\n'\
-            f'Значеня з функції HubberOrder.get_lastkey: {hubber.get_lastkey()}\n'\
-            f'Значеня з функції HubberMessage.het_lastkey: {hubber.get_lastkey()}'
-        )
-
+        if order_rozetka.json()['content']['orders'] != []:
+            await dp.bot.send_message(
+                OWNER,
+                'Запуск!\n'\
+                f'Значення яке записалося в файл Prom/key_order.txt: {order_prom.json()["orders"][0]["id"]}\n'\
+                f'Значення яке записалося в файл Rozetka/key_order.txt: {order_rozetka.json()["content"]["orders"][0]["id"]}\n\n'\
+                f'Значення яке записалося в файл Hubber/key_order.txt: {order_hubber.json()[0]["id"]}\n'\
+                f'Значення яке записалося в файл Hubber/key_message.txt: {message_hubber.json()[0]["id"]}\n\n'\
+                f'Значеня з функції Rozetka.get_lastkey: {rozetka.get_lastkey()}\n'\
+                f'Значеня з функції Prom.get_lastkey: {prom.get_lastkey()}\n'\
+                f'Значеня з функції HubberOrder.get_lastkey: {hubber.get_lastkey()}\n'\
+                f'Значеня з функції HubberMessage.het_lastkey: {hubber.get_lastkey()}'
+            )
+        else:
+            await dp.bot.send_message(
+                OWNER,
+                'Запуск!\n'\
+                f'Значення яке записалося в файл Prom/key_order.txt: {order_prom.json()["orders"][0]["id"]}\n'\
+                f'Значення яке записалося в файл Rozetka/key_order.txt: {order_rozetka.json()["content"]["orders"][0]["id"]}\n\n'\
+                f'Значення яке записалося в файл Hubber/key_order.txt: {order_hubber.json()[0]["id"]}\n'\
+                f'Значення яке записалося в файл Hubber/key_message.txt: {message_hubber.json()[0]["id"]}\n\n'\
+                f'Значеня з функції Rozetka.get_lastkey: {rozetka.get_lastkey()}\n'\
+                f'Значеня з функції Prom.get_lastkey: {prom.get_lastkey()}\n'\
+                f'Значеня з функції HubberOrder.get_lastkey: {hubber.get_lastkey()}\n'\
+                f'Значеня з функції HubberMessage.het_lastkey: {hubber.get_lastkey()}'
+            )
+            
     except Exception as e:
         logging.exception(e)
 
