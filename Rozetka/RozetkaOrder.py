@@ -35,9 +35,12 @@ class Rozetka:
             new = []
 
             logging.info(f'Lastkey: {self.lastkey}, New Order')
+            '''
             if response.json()['content']['orders'] is not None:
                 logging.info(f'ID: {response.json()["content"]["orders"][0]["id"]}, New Order')
+            '''
             logging.info(f'New: {new}, New Order')
+            logging.info(f'{response.json()['content']['orders']}')
             
             if self.lastkey is not None and int(self.lastkey) != int(response.json()['content']['orders'][0]['id']) and response.json()['content']['orders'] is not None:
                 new.append(response.json()['content']['orders'][0]['id'])
