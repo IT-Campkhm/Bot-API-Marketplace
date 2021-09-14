@@ -40,11 +40,6 @@ class Rozetka:
                 logging.info(f'ID: {response.json()["content"]["orders"][0]["id"]}, New Order')
             
             logging.info(f'New: {new}, New Order')
-            logging.info(
-                f'\n{response.json()["content"]["orders"]}\n'\
-                f'{response.json()["content"]["orders"] == []}\n'\
-                f'{self.lastkey == None}'
-                )
             
             if self.lastkey is not None and int(self.lastkey) != int(response.json()['content']['orders'][0]['id']) and response.json()['content']['orders'] != []:
                 new.append(response.json()['content']['orders'][0]['id'])
@@ -57,6 +52,7 @@ class Rozetka:
                     if order_rozetka.json()['content']['orders'] != []:
                         r.write(str(order_rozetka.json()['content']['orders'][0]['id']))
                         r.close()
+                        logging.info('Обновився ключ Rozetka')    
                 logging.info('Else neworder.py\n\n')
         
         except Exception as e:
