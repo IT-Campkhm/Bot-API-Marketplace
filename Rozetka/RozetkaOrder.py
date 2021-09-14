@@ -35,14 +35,21 @@ class Rozetka:
             new = []
 
             logging.info(f'Lastkey: {self.lastkey}, New Order')
-            #if response.json()['content']['orders'][0] is not None:
+            if response.json()['content']['orders'] is not None:
                 #logging.info(f'ID: {response.json()["content"]["orders"][0]["id"]}, New Order')
             logging.info(f'New: {new}, New Order')
             
-            if int(self.lastkey) != int(response.json()['content']['orders'][0]['id']) and response.json()['content']['orders'][0]['id'] is not None:
+            if self.lastkey is not None and int(self.lastkey) != int(response.json()['content']['orders'][0]['id']) and response.json()['content']['orders'][0]['id'] is not None:
                 new.append(response.json()['content']['orders'][0]['id'])
                 return new
             else:
+                if os.path.exists('Rozetka\key_order.txt'):
+                    order_rozetka = requests.request('GET', URL_ORDER_LIST_ROZETKA, headers = HEADERS_ROZETKA, data = PAYLOAD_ROZETKA)
+                    r = open('Rozetka/key_order.txt', 'w')
+                    r.seek(0)
+                    if order_rozetka.json().['content']['orders'] is not None:
+                        r.write(str(order_rozetka.json()['content']['orders'][0]['id']))
+                        r.close()
                 logging.info('Else neworder.py\n\n')
         
         except Exception as e:
