@@ -41,8 +41,8 @@ class Rozetka:
             '''
             logging.info(f'New: {new}, New Order')
             logging.info(
-                f'{response.json()["content"]["orders"]}\n'\
-                f'{response.json()["content"]["orders"] == None}'
+                f'\n{response.json()["content"]["orders"]}\n'\
+                f'{response.json()["content"]["orders"] == []}\n'\
                 f'{self.lastkey == None}'
                 )
             
