@@ -59,8 +59,9 @@ async def on_startup_bot(dp: Dispatcher):
             order_rozetka = requests.request('GET', URL_ORDER_LIST_ROZETKA, headers = HEADERS_ROZETKA, data = PAYLOAD_ROZETKA)
             r = open('Rozetka/key_order.txt', 'w')
             r.seek(0)
-            r.write(str(order_rozetka.json()['content']['orders'][0]['id']))
-            r.close()
+            if order_rozetka.json()['content']['orders'] is not None:
+                r.write(str(order_rozetka.json()['content']['orders'][0]['id']))
+                r.close()
             '''
             if order_rozetka.json()['content']['orders'][0]['id'] is None:
                 r.write(str(0))
