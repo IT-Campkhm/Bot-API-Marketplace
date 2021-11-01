@@ -394,7 +394,7 @@ async def check_novaposhta(wait_for):
 
 if __name__ == '__main__':
     
-    asyncio.get_event_loop().create_task(check_new_order_and_change_status_prom(3))
+    #asyncio.get_event_loop().create_task(check_new_order_and_change_status_prom(3))
     asyncio.get_event_loop().create_task(check_new_order_and_change_status_rozetka(1))
     asyncio.get_event_loop().create_task(check_new_order_hubber(30))
     asyncio.get_event_loop().create_task(check_new_message_hubber(35))
