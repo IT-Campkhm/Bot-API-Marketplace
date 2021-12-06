@@ -441,7 +441,7 @@ if __name__ == '__main__':
     
     #asyncio.get_event_loop().create_task(check_new_order_hubber(20))
     #asyncio.get_event_loop().create_task(check_new_message_hubber(25))
-    asyncio.get_event_loop().create_task(check_new_order_hubber_provider(30))
+    asyncio.get_event_loop().create_task(check_new_order_hubber_provider(10))
 
     #asyncio.get_event_loop().create_task(check_novaposhta(200))
 

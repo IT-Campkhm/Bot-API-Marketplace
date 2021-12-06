@@ -34,6 +34,7 @@ class HubberProviderOrder:
             
             if int(self.lastkey) != int(data[0]['id']):
                 new.append(data[0]['id'])
+                print(new)
                 return new
             else:
                 logging.info('Else neworder.py\n\n')
