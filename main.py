@@ -401,10 +401,13 @@ async def check_new_order_hubber_provider(wait_for):
             logging.info('Пройшла перевірка на новий заказ Hubber Provider')
 
             new_order = hubber_provider.new_order()
+            print(new_order)
 
             if new_order:
                 response = requests.request('GET', URL_ORDER_PROVIDER_HUBBER, headers = HEADERS_HUBBER_PROVIDER, data = {})
+                
                 print(len(response.json()['products']))
+                
                 for i in range(len(MODER)):
                     await dp.bot.send_message(
                         MODER[i],
