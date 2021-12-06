@@ -408,7 +408,7 @@ async def check_new_order_hubber_provider(wait_for):
                 for i in range(len(MODER)):
                     await dp.bot.send_message(
                         MODER[i],
-                        '<b>Наш товар заказали на маркетплейсі</b>\n\n'\
+                        '<b>Заявка від Маркетплейсів (обробити замовлення!)</b>\n\n'\
                         f'ID заказа: {response.json()[0]["alias"]}\n'
                         f'Статус заказа: {response.json()[0]["status"]["title"]}\n'\
                         f'Ім\'я та прізвище клієнта: {response.json()[0]["client_name"]}\n'\
