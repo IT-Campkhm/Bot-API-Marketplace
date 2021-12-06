@@ -398,33 +398,35 @@ async def check_new_order_hubber_provider(wait_for):
         while True:
             await asyncio.sleep(wait_for)
 
-            logging.info('Пройшла перевірка на новий заказ Hubber')
+            logging.info('Пройшла перевірка на новий заказ Hubber Provider')
 
-            new_order = hubber.new_order()
+            new_order = hubber_provider.new_order()
 
             if new_order:
                 response = requests.request('GET', URL_ORDER_PROVIDER_HUBBER, headers = HEADERS_HUBBER_PROVIDER, data = {})
+                print(len(response.json()['products']))
                 for i in range(len(MODER)):
                     await dp.bot.send_message(
                         MODER[i],
-                        '<b></b>\n\n'\
+                        '<b>Наш товар заказали на маркетплейсі</b>\n\n'\
                         f'ID заказа: {response.json()[0]["alias"]}\n'
                         f'Статус заказа: {response.json()[0]["status"]["title"]}\n'\
-                        f'Ім\'я та прізвище клієнта: {response.json()[0]["outgoing"][0]["client_name"]}\n'\
-                        f'Номер телефона клієнта: {response.json()[0]["outgoing"][0]["client_phone"]}\n'\
-                        f'Емаїл клієнта: {response.json()[0]["outgoing"][0]["client_email"]}\n'\
-                        f'Постачальник: {response.json()[0]["outgoing"][0]["company"]["title"]}\n'\
-                        f'Доставка: {response.json()[0]["outgoing"][0]["delivery_data"]}\n'\
-                        f'Нотатки до замовлення: {response.json()[0]["outgoing"][0]["order_notes"]}\n\n'\
+                        f'Ім\'я та прізвище клієнта: {response.json()[0]["client_name"]}\n'\
+                        f'Номер телефона клієнта: {response.json()[0]["client_phone"]}\n'\
+                        f'Емаїл клієнта: {response.json()[0]["client_email"]}\n'\
+                        f'Маркетплейс: {response.json()[0]["company"]["title"]}\n'\
+                        f'Доставка: {response.json()[0]["delivery_data"]}\n'\
+                        f'Нотатки до замовлення: {response.json()[0]["comment"]}\n\n'\
                         '<b>Товар</b>\n'\
-                        f'ID товара: {response.json()[0]["outgoing"][0]["products"][0]["vendor_code"]}\n'\
-                        f'Назва товара: {response.json()[0]["outgoing"][0]["products"][0]["title"]}\n'\
-                        f'Ціна за одну штуку: {response.json()[0]["outgoing"][0]["products"][0]["price"]}\n'\
-                        f'Кількість: {response.json()[0]["outgoing"][0]["products"][0]["count"]}\n\n'\
-                        f'<a href = \'https://office.hubber.pro/order/edit/{response.json()[0]["id"]}\'>Більше інформації</a>'
+                        f'ID товара: {response.json()[0]["products"][0]["vendor_code"]}\n'\
+                        f'Назва товара: {response.json()[0]["products"][0]["title"]}\n'\
+                        f'Ціна за одну штуку: {response.json()[0]["products"][0]["price"]}\n'\
+                        f'Кількість: {response.json()[0]["products"][0]["count"]}\n'\
+                        f'Комісія в %: {response.json()[0]["products"][0]["supplier_commission_percent"]}\n'\
+                        f'Комісія в грн: {response.json()[0]["products"][0]["supplier_commission_money"]}'
                     )
                 
-                hubber.update_lastkey(response.json()[0]['id']) #Оновлення ключа
+                hubber_provider.update_lastkey(response.json()[0]['id']) #Оновлення ключа
 
     except Exception as e:
         logging.exception(e)
@@ -432,9 +434,12 @@ async def check_new_order_hubber_provider(wait_for):
 if __name__ == '__main__':
     
     #asyncio.get_event_loop().create_task(check_new_order_and_change_status_prom(3))
-    asyncio.get_event_loop().create_task(check_new_order_and_change_status_rozetka(10))
-    asyncio.get_event_loop().create_task(check_new_order_hubber(20))
-    asyncio.get_event_loop().create_task(check_new_message_hubber(25))
-    asyncio.get_event_loop().create_task(check_novaposhta(200))
+    #asyncio.get_event_loop().create_task(check_new_order_and_change_status_rozetka(10))
+    
+    #asyncio.get_event_loop().create_task(check_new_order_hubber(20))
+    #asyncio.get_event_loop().create_task(check_new_message_hubber(25))
+    asyncio.get_event_loop().create_task(check_new_order_hubber_provider(30))
+
+    #asyncio.get_event_loop().create_task(check_novaposhta(200))
 
     executor.start_polling(dp, on_startup = on_startup_bot)
