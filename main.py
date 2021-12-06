@@ -3,26 +3,24 @@ import json
 import logging
 import os
 from datetime import datetime
-import pprint
 
 import aiogram
 import requests
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.builtin import Command
 
-from globalconfig import MODER, OWNER, CHAT_ID
+from globalconfig import CHAT_ID, MODER, OWNER
 from Hubber.config import (HEADERS_HUBBER, URL_MESSAGE_HUBBER,
                         URL_ORDER_HUBBER, URL_SEND_MESSAGE_HUBBER)
 from Hubber.HubberMessage import HubberMessage
 from Hubber.HubberOrder import HubberOrder
+from NovaPoshta.handler import NovaPoshta
 from Prom.config import (HEADERS_PROM, PAYLOAD_PROM, URL_ORDER_LIST_PROM,
-                            URL_SET_STATUS_PROM)
+                        URL_SET_STATUS_PROM)
 from Prom.PromOrder import Prom
 from Rozetka.config import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
-                                    URL_ORDER_LIST_ROZETKA)
+                            URL_ORDER_LIST_ROZETKA)
 from Rozetka.RozetkaOrder import Rozetka
-from NovaPoshta.handler import NovaPoshta
-
 
 file_log = logging.FileHandler('log.txt')
 console_log = logging.StreamHandler()
