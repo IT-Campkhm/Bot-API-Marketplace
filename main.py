@@ -406,13 +406,13 @@ async def check_new_order_hubber_provider(wait_for):
 
 if __name__ == '__main__':
     
-    #asyncio.get_event_loop().create_task(check_new_order_and_change_status_prom(3))
-    #asyncio.get_event_loop().create_task(check_new_order_and_change_status_rozetka(10))
+    #asyncio.get_running_loop().create_task(check_new_order_and_change_status_prom(3))
+    #asyncio.get_running_loop().create_task(check_new_order_and_change_status_rozetka(10))
     
-    #asyncio.get_event_loop().create_task(check_new_order_hubber(20))
-    #asyncio.get_event_loop().create_task(check_new_message_hubber(25))
-    asyncio.get_event_loop().create_task(check_new_order_hubber_provider(10))
+    #asyncio.get_running_loop().create_task(check_new_order_hubber(20))
+    #asyncio.get_running_loop().create_task(check_new_message_hubber(25))
+    asyncio.get_running_loop().create_task(check_new_order_hubber_provider(10))
 
-    #asyncio.get_event_loop().create_task(check_novaposhta(200))
+    #asyncio.get_running_loop().create_task(check_novaposhta(200))
 
     executor.start_polling(dp, on_startup = on_startup_bot)
