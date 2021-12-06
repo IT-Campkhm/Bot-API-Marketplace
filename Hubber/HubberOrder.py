@@ -44,10 +44,13 @@ class HubberOrder:
             logging.exception(e)     
 
     def get_lastkey(self):
-        response = requests.request("GET", self.url, headers = self.headers, data = {})
-        data = response.json()
+        try:
+            response = requests.request("GET", self.url, headers = self.headers, data = {})
+            data = response.json()
 
-        return data[0]["id"]
+            return data[0]["id"]
+        except KeyError as ke:
+            print(ke)
 
     def update_lastkey(self, new_key):
         self.lastkey = new_key
