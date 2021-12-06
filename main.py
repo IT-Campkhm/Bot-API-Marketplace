@@ -21,7 +21,7 @@ from Prom.PromOrder import Prom
 from Rozetka.config import (HEADERS_ROZETKA, PAYLOAD_ROZETKA,
                             URL_ORDER_LIST_ROZETKA)
 from Rozetka.RozetkaOrder import Rozetka
-from HubberProvider.HubberProviderOrder import HubberProviderOrder
+from HubberProvider.HubberPOrder import HubberProviderOrder
 from HubberProvider.config import HEADERS_HUBBER_PROVIDER, URL_ORDER_PROVIDER_HUBBER
 
 file_log = logging.FileHandler('log.txt')
