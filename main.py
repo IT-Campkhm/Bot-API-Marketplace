@@ -47,15 +47,6 @@ novaposhta = NovaPoshta()
 async def on_startup_bot(dp: Dispatcher):
     try:
 
-        if os.path.exists('Prom\key_order.txt'):
-            order_prom = requests.request('GET', URL_ORDER_LIST_PROM, headers = HEADERS_PROM, data = PAYLOAD_PROM)
-            p = open('Prom/key_order.txt', 'w')
-            p.seek(0)
-            p.write(str(order_prom.json()['orders'][0]['id']))
-            p.close()
-        else:
-            logging.error('Файла Prom\key_order.txt немає')
-
         if os.path.exists('Rozetka\key_order.txt'):
             order_rozetka = requests.request('GET', URL_ORDER_LIST_ROZETKA, headers = HEADERS_ROZETKA, data = PAYLOAD_ROZETKA)
             r = open('Rozetka/key_order.txt', 'w')
@@ -67,22 +58,7 @@ async def on_startup_bot(dp: Dispatcher):
         else:
             logging.error('Файла Rozetka\key_order.txt немає')
 
-        if os.path.exists('Hubber\key_order.txt'):
-            order_hubber = requests.request('GET', URL_ORDER_HUBBER, headers = HEADERS_HUBBER, data = {})
-            h = open('Hubber/key_order.txt', 'w')
-            h.seek(0)
-            h.write(str(order_hubber.json()[0]['id']))
-            h.close()
-        else:
-            logging.error('Файла Hubber/key_order.txt немає')
-
-        if os.path.exists('Hubber\key_message.txt'):
-            message_hubber = requests.request('GET', URL_MESSAGE_HUBBER, headers = HEADERS_HUBBER, data = {})
-            h_m = open('Hubber/key_message.txt', 'w')
-            h_m.seek(0)
-            h_m.write(str(message_hubber.json()[0]['id']))
-        else:
-            logging.error('Файла Hubber/key_message.txt немає')
+        
         if order_rozetka.json()['content']['orders'] != []:
             await dp.bot.send_message(
                 OWNER,
@@ -219,6 +195,9 @@ async def send_message(message: types.Message):
 
     except Exception as e:
         logging.exception(e)
+
+
+
 
 async def check_new_order_and_change_status_prom(wait_for):
     while True:
